@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour {
         {
             GetComponent<Animator>().SetBool("Death", true);
             Destroy(collision.gameObject);
+        } else if(collision.collider.name == "EnemyTarget1")
+        {   
+            Destroy(gameObject);
         }
+        
     }
 }

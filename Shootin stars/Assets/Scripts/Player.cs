@@ -15,9 +15,17 @@ public class Player : MonoBehaviour {
     void Start () {
 		
 	}
-	
-	// Update is called 50 times per second
-	void FixedUpdate () {
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.name == "Enemy(Clone)")
+        {
+            GetComponent<Animator>().SetBool("Death", true);
+        }
+    }
+
+    // Update is called 50 times per second
+    void FixedUpdate () {
         float x     = Input.GetAxisRaw("Horizontal");
         float y     = Input.GetAxisRaw("Vertical");
         float shooting = Input.GetAxisRaw("Fire1");
@@ -26,7 +34,10 @@ public class Player : MonoBehaviour {
         GameObject firedMissle;
 
         GetComponent<Rigidbody2D>().velocity = new Vector2(x * Velocity, y * Velocity);
-
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Explosion_Nave"))
+        {
+            return;
+        }
         if(shooting > 0 && shotingSpeed < 0)
         {
             spawn = leftShoting ? SpawnLeftShoot : SpawnRightShoot;
@@ -37,6 +48,15 @@ public class Player : MonoBehaviour {
         } else
         {
             shotingSpeed -= Time.fixedDeltaTime;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Explosion_Nave") && GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+        {
+            GetComponent<Animator>().SetBool("Death", false);
+            transform.position = new Vector2();
         }
     }
 }
